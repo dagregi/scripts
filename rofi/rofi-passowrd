@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+rofi -dmenu \
+	-password \
+	-theme $XDG_CONFIG_HOME/rofi/themes/password.rasi
