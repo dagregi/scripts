@@ -15,17 +15,12 @@ logoff() {
 }
 
 state=$(echo -e "$lock_opt\n$logoff_opt\n$restart_opt\n$shutdown_opt" | rofi -dmenu -u -1 -theme $XDG_CONFIG_HOME/rofi/themes/powermenu.rasi)
-[ -n "$state" ] && confirmation=$(echo "Yes\nNo" | rofi-confirm)
+[ -n "$state" ] && confirmation=$(echo -e "Yes\nNo" | rofi-confirm)
 
 [ "$confirmation" = "Yes" ] && case "$state" in
-"$shutdown_opt") loginctl poweroff
-	;;
-"$restart_opt") loginctl reboot
-	;;
-"$lock_opt") lock_screen
-	;;
-"$logoff_opt") logoff
-	;;
-*) echo "Stil don't know what to do!"
-	;;
+"$shutdown_opt") loginctl poweroff ;;
+"$restart_opt") loginctl reboot ;;
+"$lock_opt") lock_screen ;;
+"$logoff_opt") logoff ;;
+*) echo "Stil don't know what to do!" ;;
 esac || exit 0

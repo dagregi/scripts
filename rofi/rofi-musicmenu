@@ -63,18 +63,11 @@ state=$(
 )
 
 case "$state" in
-"$toggle_opt") toggle_play_pause
-	;;
-"$stop_opt") stop_palyback
-	;;
-"$next_opt") next_track
-	;;
-"$prev_opt") prev_track
-	;;
-"$repeat_opt") toggle_repeat
-	;;
-"$random_opt") toggle_random
-	;;
-*) echo "Don't know what to do"
-	;;
+"$toggle_opt") toggle_play_pause ;;
+"$stop_opt") stop_palyback ;;
+"$next_opt") next_track ;;
+"$prev_opt") prev_track ;;
+"$repeat_opt") toggle_repeat ;;
+"$random_opt") toggle_random ;;
+*) echo "Don't know what to do" ;;
 esac
