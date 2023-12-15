@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 COVER_DIR="/tmp"
 filename=$(mpc current -f %file%)

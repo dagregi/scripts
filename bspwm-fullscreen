@@ -14,8 +14,13 @@ show_nodes() {
 }
 
 bspc subscribe node_state | while read -r event monitor_id desktop_id node_id state value; do
-	[ "$state" = "fullscreen" ] && [ "$value" = "on" ] && polybar-msg cmd hide && hide_nodes "$desktop_id" ||
-		polybar-msg cmd show && show_nodes "$desktop_id"
+	if [ "$state" = "fullscreen" ] && [ "$value" = "on" ]; then
+		polybar-msg cmd hide
+		hide_nodes "$desktop_id"
+	else
+		polybar-msg cmd show
+		show_nodes "$desktop_id"
+	fi
 done &
 bspc subscribe node_remove | while read event monitor_id desktop_id node_id; do
 	polybar-msg cmd show
