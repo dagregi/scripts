@@ -1,6 +1,5 @@
 #!/usr/bin/env sh
 
-# Simple script to restart programs
 program="$1"
 killall -q $program && notify-send " Restarting $program...."
 $program &

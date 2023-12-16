@@ -5,7 +5,6 @@ status=$(mpc status)
 artist=$(mpc current -f %artist%)
 title=$(mpc current -f %title%)
 album=$(mpc current -f %album%)
-
 is_stopped=$(mpc status | awk '{ print $2 }')
 is_repeat=$(mpc status | awk '/repeat/ { print $4 }')
 is_random=$(mpc status | awk '/random/ { print $6 }')
@@ -43,7 +42,6 @@ next_opt="󰒭"
 stop_opt="󰓛"
 random_opt="󰒝"
 repeat_opt="󰑖"
-
 urgent=""
 [ "$is_repeat" = "off" ] && [ "$is_random" = "off" ] && active=""
 [ "$is_repeat" = "on" ] && [ "$is_random" = "off" ] && active="4"
@@ -61,7 +59,6 @@ state=$(
 			-a "${active}" -u "$urgent" \
 			-theme $XDG_CONFIG_HOME/rofi/themes/musicdash.rasi
 )
-
 case "$state" in
 "$toggle_opt") toggle_play_pause ;;
 "$stop_opt") stop_palyback ;;

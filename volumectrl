@@ -2,7 +2,6 @@
 
 device=$(pactl list sinks | awk '{ /Name/ print $2}')
 is_muted=$(pactl get-sink-mute "$device" | awk '{ print $2}')
-
 get_volume() {
 	volume=$(pactl get-sink-volume "$device" | awk '{ print $5}')
 	echo "$volume"
@@ -16,13 +15,11 @@ decrease_volume() {
 	pactl set-sink-volume "$device" -5%
 	dunstify -t 900 "Vol: $(pactl get-sink-volume "$device" | awk '{ print $5}')"
 }
-
 toggle_mute() {
 	[ "$is_muted" = "yes" ] && pactl set-sink-mute "$device" false &&
 		dunstify -t 900 "Vol: $(pactl get-sink-volume "$device" | awk '{ print $5}')" ||
 		pactl set-sink-mute "$device" true && dunstify -t 900 "Muted"
 }
-
 case "$1" in
 "up") increase_volume ;;
 "down") decrease_volume ;;
@@ -37,12 +34,10 @@ case "$1" in
 *) echo "Woah! relax mate, this is how you use it:
         
 	volumectrl <COMMAND>
-
 	up                 increase the volume by 5
 	down               decrease the volume by 5
 	toggle             toggle mute state
 	get <volume/mute>  get state
 " ;;
 esac
-
 polybar-msg hook audio 1
