@@ -8,7 +8,7 @@ $HOME/projects/advent-of-code
 $HOME/cybersecurity
 $HOME/cybersecurity/tools"
 
-[[ $# -eq 1 ]] && selected=$1 || selected=$(fd . $folders -td --exact-depth=1 | fzf -e)
+[[ $# -eq 1 ]] && selected=$1 || selected=$(fd . $folders -td --exact-depth=1 | sort | uniq | fzf)
 [[ -z $selected ]] && exit 0
 selected_name=$(basename "$selected" | tr . _)
 tmux_running=$(pgrep tmux)
