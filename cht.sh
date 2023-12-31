@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 languages=$(echo "rust typescript golang lua c python" | tr ' ' '\n')
 core_utils=$(echo "awk sed xargs" | tr ' ' '\n')

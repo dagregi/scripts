@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
 program="$1"
-killall -q $program && notify-send " Restarting $program...."
+pkill -9 $program && notify-send " Restarting $program...."
 $program &

@@ -5,7 +5,7 @@ logoff_opt="󰗽"
 restart_opt="󰜉"
 lock_opt=""
 lock_screen() {
-	[ -n "$(mpc status)"] && mpc -q pause
+	[ -n "$(mpc status)" ] && mpc -q pause
 	betterlockscreen -l
 }
 logoff() {
