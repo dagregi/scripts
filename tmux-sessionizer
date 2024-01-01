@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 folders="$HOME/projects
-$HOME/projects/web
 $HOME/projects/rust
 $HOME/projects/ocaml
 $HOME/projects/go"
