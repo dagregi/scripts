@@ -25,3 +25,22 @@ bspc subscribe node_remove | while read event monitor_id desktop_id node_id; do
 	polybar-msg cmd show
 	show_nodes "$desktop_id"
 done &
+bspc subscribe node_transfer | while read -r event monitor_id desktop_id node_id nem_monitor new_desktop new_node; do
+	if [ -n "$(bspc query -N -n "$node_id".fullscreen)" ]; then
+		show_nodes "$desktop_id"
+		hide_nodes "$new_desktop"
+		polybar-msg cmd show
+	fi
+	fullscreen=$(bspc query -N -n .fullscreen -d "$new_desktop" | sed "/$node_id/d")
+	if [ -n "$fullscreen" ]; then
+		hide_nodes "$fullscreen"
+	fi
+done &
+bspc subscribe desktop_focus | while read -r event monitor_id desktop_id; do
+	fullscreen="$(bspc query -N -n .fullscreen -d "$desktop_id")"
+	if [ -n "$fullscreen" ]; then
+		polybar-msg cmd hide
+	else
+		polybar-msg cmd show
+	fi
+done &
