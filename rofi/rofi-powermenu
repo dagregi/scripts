@@ -6,7 +6,7 @@ restart_opt="󰜉"
 lock_opt=""
 lock_screen() {
 	[ -n "$(mpc status)" ] && mpc -q pause
-	betterlockscreen -l
+	betterlockscreen -l dimblur
 }
 logoff() {
 	mpd --kill
