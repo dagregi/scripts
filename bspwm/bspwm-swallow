@@ -1,97 +1,46 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
-probe() {
-	set $(xprop WM_CLASS -id "$1")
-	printf '%s' "${3}"
+get_class() {
+	id=$1
+	if [ -z "$id" ]; then
+		echo ""
+	else
+		xprop -id "$id" | sed -n '/WM_CLASS\|WM_COMMAND/s/.*"\(.*\)".*/\1/p'
+	fi
 }
-case_event() {
-	case $1 in
-	node_add) swallow ;;
-	node_remove) spit ;;
-	esac
-}
+
 swallow() {
-	query_desktop || return 1
-	query_swallower || return 1
-	query_swallowing || return 1
-	hide_node
-}
-query_desktop() {
-	node_desktop=$(bspc query -D -n "$new_node")
-	[[ "$desktop" = "$node_desktop" ]] || false
-}
-query_swallower() {
-	application=$(probe "$new_node")
-	: "${SWALLOW_APPLICATIONS:-$def_apps}"
-	[[ "${application,,}" =~ ${_,,} ]] || false
-}
-query_swallowing() {
-	terminal=$(probe "$last_node")
-	: "${SWALLOW_TERMINALS:-$def_terms}"
-	[[ "${terminal,,}" =~ ${_,,} ]] || false
-}
-hide_node() {
-	bspc node "$last_node" --flag hidden=on
-	swallowed+=("$new_node $last_node")
+	addedtodesktop=$2
+	lasttermdesktop=$(bspc query -D -n last)
+
+	swallowerid=$1
+	swallowingid=$(bspc query -N -n last)
+
+	if [ "$addedtodesktop" = "$lasttermdesktop" ]; then
+		grep "^$(get_class "$swallowerid")$" ~/.config/bspwm/swallow || return
+		grep "^$(get_class "$swallowingid")$" ~/.config/bspwm/terminals || return
+		echo "$swallowerid $swallowingid" >>/tmp/swallowids
+		bspc node "$swallowingid" --flag hidden=on
+	fi
 }
 spit() {
-	query_spitting || return 1
-	query_spitting_desktop || pull_node_desktop
-	show_node
+	spitterid=$1
+	spitterdesktop=$2
+	grep "^$spitterid" /tmp/swallowids || return
+	spittingid=$(grep "^$spitterid" /tmp/swallowids | head -n1 | awk '{print $2}')
+
+	bspc node "$spittingid" --flag hidden=off
+
+	termdesktop=$(bspc query -D -n "$spittingid")
+	[ "$termdesktop" = "$spitterdesktop" ] || bspc node "$spittingid" -d "$spitterdesktop"
+
+	bspc node "$spittingid" -f
+	sed -i "/^$spitterid/d" /tmp/swallowids
 }
-query_spitting() {
-	for ((spit = 0; spit < ${#swallowed[@]}; spit++)); do
-		[[ "${swallowed[spit]}" =~ ^$last_node ]] || continue
-		set ${swallowed[spit]}
-		node_spit="$2"
-		return 0
-	done
-	return 1
-}
-query_spitting_desktop() {
-	spitting_desktop=$(bspc query -D -n "$node_spit")
-	[[ "$desktop" = "$spitting_desktop" ]] || false
-}
-pull_node_desktop() {
-	bspc node "$node_spit" -d "$desktop"
-}
-show_node() {
-	bspc node "$node_spit" --flag hidden=off
-	bspc node "$node_spit" -f
-	unset 'swallowed[spit]'
-}
-get_defaults() {
-	for app in "image/*" "video/*" "application/pdf"; do
-		: "$(xdg-mime query default $app)"
-		def_apps+="${_%.desktop}|"
-	done
-	def_apps="${def_apps%|}"
-	def_terms="st|urxvt"
-}
-survive() {
-	trap 'write_survival || rm $survival' EXIT
-	survival="${TMPDIR:-/tmp}/swallowed"
-	read_survival() {
-		[[ -e "$survival" ]] || return 1
-		IFS=$'\n' read -rd '' -a swallowed <"$survival"
-	}
-	write_survival() {
-		[[ ${swallowed[@]} ]] || return 1
-		printf '%s\n' "${swallowed[@]}" >"$survival"
-	}
-	read_survival
-}
-define_elements() {
-	desktop=$3
-	last_node=$4
-	new_node=$5
-}
-main() {
-	while read -r -a event; do
-		define_elements "${event[@]}"
-		case_event "${event[0]}"
-	done < <(bspc subscribe node_add node_remove)
-}
-survive
-get_defaults
-main
+
+bspc subscribe node_add node_remove | while read -r event; do
+	case $(echo "$event" | awk '{ print $1 }') in
+	node_add) swallow $(echo "$event" | awk '{print $5 " " $3}') ;;
+	node_remove) spit $(echo "$event" | awk '{print $4 " " $3}') ;;
+	esac
+done
