@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-shutdown_opt=""
-logoff_opt="󰗽"
+shutdown_opt="󰐥"
+logoff_opt="󰍃"
 restart_opt="󰜉"
 lock_opt=""
 lock_screen() {
