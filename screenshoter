@@ -20,7 +20,7 @@ take_screenshot() {
 countdown() {
 	local tm="${1:-5}"
 	for sec in $(seq $tm -1 1); do
-		dunstify -t 900 --replace=699 -i timer-symbolic "Taking shot in : $sec"
+		dunstify -t 990 --replace=699 -i timer-symbolic "Taking shot in : $sec"
 		sleep 1
 	done
 }

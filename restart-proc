@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 program="$1"
-notify-send -t 900 " Restarting $program..."
+notify-send -i reload -t 900 "Restarting $program..."
 [ $program = "st" ] && xrdb merge $HOME/.Xresources && kill -USR1 $(pidof st) && exit 1
 pkill -9 $program
 $program &
