@@ -1,0 +1,43 @@
+#!/usr/bin/env sh
+
+dir="$HOME/Pictures/Screenshots"
+filename="$dir/screenshot-$(date +%Y%m%d-%I%M%S).png"
+
+show_notification() {
+	if [ -e "$filename" ]; then
+		dunstify -i "$filename" "Screenshot" "Saved screenshot "
+	else
+		dunstify -i action-unavailable "Screenshot" "Cancelled screenshot"
+	fi
+}
+
+take_screenshot() {
+	createdir $dir
+	maim -u "$@" "$filename"
+	show_notification
+}
+
+countdown() {
+	[ -z "$1" ] && tm="5" || tm="$1"
+	for sec in $(seq $tm -1 1); do
+		dunstify -t 900 --replace=699 -i timer-symbolic "Taking shot in : $sec"
+		sleep 1
+	done
+}
+
+case "$1" in
+"active" | "a") take_screenshot -i "$(xdotool getactivewindow)" ;;
+"now" | "n") take_screenshot ;;
+"select" | "s") take_screenshot -s -o ;;
+"time" | "t") countdown $2 && take_screenshot ;;
+"--help" | "-h") echo "Woah! relax mate, this is how you use it:
+
+\033[1;37mUsage: \033[0mscreenshoter [COMMAND]
+
+\033[1;37mCommands:\033[0m
+  active, a          screenshot the active window
+  now, n             take screenshot now
+  select, s          screenshot the selected area
+  time, t <SECONDS>  take screenshot in the given time default=5" ;;
+*) take_screenshot ;;
+esac
