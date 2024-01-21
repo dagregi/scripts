@@ -1,44 +1,55 @@
 #!/usr/bin/env sh
 
+time_out=1800
 device=$(pactl list sinks | awk '/Name/ {print $2}')
-is_muted=$(pactl get-sink-mute "$device" | awk '{print $2}')
+
 get_volume() {
-	volume=$(pactl get-sink-volume "$device" | awk '{print $5}')
-	echo "$volume"
+	pactl get-sink-volume "$device" | awk '{print $5}'
 }
-increase_volume() {
-	[ "$is_muted" = "yes" ] && pactl set-sink-mute "$device" false &&
-		pactl set-sink-volume "$device" +5% || pactl set-sink-volume "$device" +5%
-	dunstify -t 900 "Vol: $(pactl get-sink-volume "$device" | awk '{print $5}')"
+
+show_notification() {
+	volume=$(get_volume | tr -d "%")
+	if [ "$volume" -gt 75 ]; then
+		icon="audio-volume-high"
+	elif [ "$volume" -gt 35 ]; then
+		icon="audio-volume-medium"
+	else
+		icon="audio-volume-low"
+	fi
+	dunstify -i "$icon" -t $time_out "Vol: $volume%"
 }
-decrease_volume() {
-	pactl set-sink-volume "$device" -5%
-	dunstify -t 900 "Vol: $(pactl get-sink-volume "$device" | awk '{print $5}')"
+
+adjust_volume() {
+	operation="$1"
+	is_muted=$(pactl get-sink-mute "$device" | awk '{print $2}')
+	if [ "$is_muted" = "yes" ]; then
+		pactl set-sink-mute "$device" false
+	fi
+	pactl set-sink-volume "$device" "$operation"
+	show_notification
 }
-toggle_mute() {
-	[ "$is_muted" = "yes" ] && pactl set-sink-mute "$device" false &&
-		dunstify -t 900 "Vol: $(pactl get-sink-volume "$device" | awk '{print $5}')" || {
-		pactl set-sink-mute "$device" true && dunstify -t 900 "Muted"
-	}
-}
+
 case "$1" in
-"up") increase_volume ;;
-"down") decrease_volume ;;
-"get") {
-	case "$2" in
-	"volume") get_volume ;;
-	"mute") echo "$is_muted" ;;
-	*) echo "Get what now?!" ;;
-	esac
-} ;;
-"toggle") toggle_mute ;;
+"up") adjust_volume "+5%" ;;
+"down") adjust_volume "-5%" ;;
+"toggle")
+	is_muted=$(pactl get-sink-mute "$device" | awk '{print $2}')
+	if [ "$is_muted" = "yes" ]; then
+		pactl set-sink-mute "$device" false
+		show_notification
+	else
+		pactl set-sink-mute "$device" true
+		dunstify -i audio-volume-muted -t $time_out "Muted"
+	fi
+	;;
 *) echo "Woah! relax mate, this is how you use it:
-        
-	volumectrl <COMMAND>
-	up                 increase the volume by 5
-	down               decrease the volume by 5
-	toggle             toggle mute state
-	get <volume/mute>  get state
-" ;;
+
+\033[1;37mUsage: \033[0mvolumectrl [COMMAND]
+
+\033[1;37mCommands:\033[0m
+  up                 increase the volume by 5
+  down               decrease the volume by 5
+  toggle             toggle mute state" ;;
 esac
+
 polybar-msg action "#audio.hook.0"
