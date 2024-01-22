@@ -74,7 +74,7 @@ main() {
 				-p "$prompt" \
 				-mesg "$message" \
 				-a "${active}" -u "$urgent" \
-				-theme "$XDG_CONFIG_HOME/rofi/themes/musicdash.rasi"
+				-theme "$XDG_CONFIG_HOME/rofi/themes/playermenu.rasi"
 	)
 
 	case "$state" in
