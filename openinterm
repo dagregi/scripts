@@ -1,6 +1,0 @@
-#!/bin/sh
-
-program="$1"
-class=$(echo $program | sed 's/^./\u&/')
-
-$TERMINAL -c $class -n $class -e $program
