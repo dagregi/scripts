@@ -1,23 +1,22 @@
 #!/usr/bin/env bash
 
-COVER_DIR="/tmp/album-art"
+COVER_DIR="/tmp/previews"
 metadata="$(mpc current -f "%file%~%artist%~%title%~%album%")•"
 IFS="~" read -d "•" -r filename artist title album <<<"$metadata"
 
 display_notification() {
-	dunstify -t 2500 -i "$1.png" "󰝚  $2" "󰠃  $3\n󰀥  $4"
+	dunstify --replace=697 -t 2500 -i "$1.png" "󰝚 $2" "󰠃 $3\n󰀥 $4"
 }
 update_album_cover() {
 	if [ ! -e "$1.png" ] && [ -e "$1-raw.png" ]; then
 		convert -resize 80x80 "$1-raw.png" "$1.png"
 	elif [ ! -e "$1.png" ]; then
-		mpc readpicture "$filename" >"$1-raw.png" 2>/dev/null
-		convert -resize 80x80 "$1-raw.png" "$1.png"
+		ffmpeg -y -i "$HOME/Music/$filename" -an -vf scale=80:80 "$1.png" >/dev/null 2>&1
 	fi
 }
 
 song_changed() {
-	[ -d "$COVER_DIR" ] && mkdir -p $COVER_DIR
+	[ ! -d "$COVER_DIR" ] && mkdir -p $COVER_DIR
 	update_album_cover "$COVER_DIR/$album"
 	display_notification "$COVER_DIR/$album" "$title" "$artist" "$album"
 }

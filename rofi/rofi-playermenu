@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-COVER_PATH="/tmp"
+COVER_PATH="/tmp/previews"
 time_out=1800
 status=$(mpc status)
 artist=$(mpc current -f %artist%)
@@ -19,25 +19,25 @@ check_status() {
 }
 
 update_cover() {
-	if [ ! -e "$COVER_PATH/$album-raw.png" ]; then
-		mpc readpicture "$(mpc current -f %file%)" >"$COVER_PATH/$album-raw.png" 2>/dev/null
+	if [ ! -e "$1.png" ]; then
+		ffmpeg -y -i "$HOME/Music/$(mpc current -f %file%)" -an -vf scale=360:360 "$1.png" >/dev/null 2>&1
 	fi
-	cover="$COVER_PATH/$album-raw.png"
+	cover="$1.png"
 }
 
 toggle_play_pause() {
-	[ -n "$status" ] && mpc -q toggle && dunstify -t $time_out "$(mpc status | awk '/\[/ { print $1 }' | tr -d '\[\]' | sed 's/p/P/')" || exit 0
+	[ -n "$status" ] && mpc -q toggle && dunstify --replace=696 -t $time_out "$(mpc status | awk '/\[/ { print $1 }' | tr -d '\[\]' | sed 's/p/P/')" || exit 0
 }
 stop_playback() {
 	mpc -q stop
-	dunstify -i media-playback-stop -t $time_out "Playback stopped"
+	dunstify --replace=696 -i media-playback-stop -t $time_out "Playback stopped"
 }
 
 toggle_shuffle() {
-	[ -n "$status" ] && mpc -q random && dunstify -i media-playlist-shuffle -t $time_out "Random: $(mpc status | awk '/random/ { print $6 }')" || exit 0
+	[ -n "$status" ] && mpc -q random && dunstify --replace=696 -i media-playlist-shuffle -t $time_out "Random: $(mpc status | awk '/random/ { print $6 }')" || exit 0
 }
 toggle_repeat() {
-	[ -n "$status" ] && mpc -q repeat && dunstify -i media-playlist-repeat -t $time_out "Repeat: $(mpc status | awk '/repeat/ { print $4 }')" || exit 0
+	[ -n "$status" ] && mpc -q repeat && dunstify --replace=696 -i media-playlist-repeat -t $time_out "Repeat: $(mpc status | awk '/repeat/ { print $4 }')" || exit 0
 }
 
 next_track() {
@@ -65,7 +65,7 @@ update_options() {
 main() {
 	check_status
 	update_options
-	update_cover
+	update_cover "$COVER_PATH/$album-raw"
 	state=$(
 		echo -e "$prev_opt\n$toggle_opt\n$next_opt\n$stop_opt\n$repeat_opt\n$shuffle_opt" |
 			rofi -dmenu \

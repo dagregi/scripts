@@ -1,7 +1,10 @@
 #!/usr/bin/env sh
 
 program="$1"
-[ "$program" = "st" ] && xrdb merge $HOME/.Xresources && pkill -USR1 $(pidof st) && exit 1
-pkill -9 $program
-$program &
+if [ "$program" = "st" ] && [ -n "$(pgrep -x $program)" ]; then
+	xrdb -merge $HOME/.Xresources && pkill -USR1 $(pidof $program)
+elif [ -n "$(pgrep -x $program)" ]; then
+	pkill -9 $program
+	$program &
+fi
 notify-send -i reload -t 900 "$program" "Process restarted"
