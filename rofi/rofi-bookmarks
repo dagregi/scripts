@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-bookmarks=$(rg "https?:\/\/\S+(\/\S+)*(\/)?" --only-matching)
+bookmarks=$(rg "https?:\/\/\S+(\/\S+)*(\/)?" --only-matching --no-filename)
 selected=$(echo "$bookmarks" | rofi -dmenu -theme $XDG_CONFIG_HOME/rofi/themes/bookmarks.rasi)

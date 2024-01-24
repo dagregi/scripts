@@ -7,12 +7,13 @@ case "$1" in
 --htop) $TERMINAL -e htop ;;
 --editor) $TERMINAL -e nvim ;;
 --filemanager) $TERMINAL -e lf ;;
---visualizer) $TERMINAL -e cava -c Cava -n Cava ;;
---music) $TERMINAL -e ncmpcpp -c Ncmpcpp -n Ncmpcpp ;;
+--visualizer) $TERMINAL -c Cava -n Cava -e cava ;;
+--music) $TERMINAL -c Ncmpcpp -n Ncmpcpp -e ncmpcpp ;;
 --runner) rofi-runner ;;
 --launcher) rofi-launcher ;;
---powermenu) rofi-powermenu ;;
 --bookmarks) rofi-bookmarks ;;
+--powermenu) rofi-powermenu ;;
+--shortcuts) rofi-shortcuts ;;
 --playermenu) rofi-playermenu ;;
 *) echo "Don't know what to do?" ;;
 esac
