@@ -14,6 +14,7 @@ case "$1" in
 --bookmarks) rofi-bookmarks ;;
 --powermenu) rofi-powermenu ;;
 --shortcuts) rofi-shortcuts ;;
+--passwords) rofi-passwords ;;
 --playermenu) rofi-playermenu ;;
 *) echo "Don't know what to do?" ;;
 esac
