@@ -9,7 +9,7 @@ display_notification() {
 }
 update_album_cover() {
 	if [ ! -e "$1.png" ] && [ -e "$1-raw.png" ]; then
-		convert -resize 80x80 "$1-raw.png" "$1.png"
+		magick "$1-raw.png"  -thumbnail 80x80 "$1.png"
 	elif [ ! -e "$1.png" ]; then
 		ffmpeg -y -i "$HOME/Music/$filename" -an -vf scale=80:80 "$1.png" >/dev/null 2>&1
 	fi

@@ -19,10 +19,10 @@ check_status() {
 }
 
 update_cover() {
-	if [ ! -e "$1.png" ]; then
-		ffmpeg -y -i "$HOME/Music/$(mpc current -f %file%)" -an -vf scale=360:360 "$1.png" >/dev/null 2>&1
+	if [ ! -e "$1-raw.png" ]; then
+		ffmpeg -y -i "$HOME/Music/$(mpc current -f %file%)" -an -vf scale=360:360 "$1-raw.png" >/dev/null 2>&1
 	fi
-	cover="$1.png"
+	cover="$1-raw.png"
 }
 
 toggle_play_pause() {
