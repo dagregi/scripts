@@ -1,0 +1,20 @@
+#!/usr/bin/env sh
+
+adjust_brightness() {
+	operation="$1"
+	brightnessctl set "$operation"
+	brightness=$(brightnessctl info | awk '/Current/ {print $4}' | tr -d \(\))
+	dunstify --replace=698 -i brightnesssettings -t 1800 "Brightness: $brightness"
+}
+
+case "$1" in
+"up") adjust_brightness "+0%" ;;
+"down") adjust_brightness "0%-" ;;
+*) echo "Woah! relax mate, this is how you use it:
+
+\033[1;37mUsage: \033[0mlightctrl [COMMAND]
+
+\033[1;37mCommands:\033[0m
+  up                 increase the brightness by 10
+  down               decrease the brightness by 10" ;;
+esac
