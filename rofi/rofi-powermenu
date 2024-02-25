@@ -16,8 +16,8 @@ state=$(echo -e "$lock_opt\n$logoff_opt\n$restart_opt\n$shutdown_opt" | rofi -dm
 [ -n "$state" ] && confirmation=$(echo -e "Yes\nNo" | rofi-confirm)
 
 [ "$confirmation" = "Yes" ] && case "$state" in
-"$shutdown_opt") sudo poweroff ;;
-"$restart_opt") sudo reboot now ;;
+"$shutdown_opt") $TERMINAL -c CustomFloat -n CustomFloat -e sudo poweroff ;;
+"$restart_opt") $TERMINAL -c CustomFloat -n CustomFloat -e sudo reboot ;;
 "$lock_opt") lock_screen ;;
 "$logoff_opt") logoff ;;
 *) echo "Stil don't know what to do!" ;;

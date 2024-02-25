@@ -7,8 +7,8 @@ artist=$(mpc current -f %artist%)
 title=$(mpc current -f %title%)
 album=$(mpc current -f %album%)
 is_stopped=$(awk '{ print $2 }' <<<"$status")
-is_repeat=$(awk '/repeat/ { print $4 }' <<<"$status")
-is_shuffle=$(awk '/random/ { print $6 }' <<<"$status")
+is_repeat=$(awk '/repeat/ { print $3 }' <<<"$status")
+is_shuffle=$(awk '/random/ { print $5 }' <<<"$status")
 is_playing=$(awk '/\[/ { print $1 }' <<<"$status" | tr -d '\[\]')
 
 check_status() {
@@ -34,10 +34,10 @@ stop_playback() {
 }
 
 toggle_shuffle() {
-	[ -n "$status" ] && mpc -q random && dunstify --replace=696 -i media-playlist-shuffle -t $time_out "Random: $(mpc status | awk '/random/ { print $6 }')" || exit 0
+	[ -n "$status" ] && mpc -q random && dunstify --replace=696 -i media-playlist-shuffle -t $time_out "Random: $(mpc status | awk '/random/ { print $5 }')" || exit 0
 }
 toggle_repeat() {
-	[ -n "$status" ] && mpc -q repeat && dunstify --replace=696 -i media-playlist-repeat -t $time_out "Repeat: $(mpc status | awk '/repeat/ { print $4 }')" || exit 0
+	[ -n "$status" ] && mpc -q repeat && dunstify --replace=696 -i media-playlist-repeat -t $time_out "Repeat: $(mpc status | awk '/repeat/ { print $3 }')" || exit 0
 }
 
 next_track() {
