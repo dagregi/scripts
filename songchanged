@@ -1,17 +1,20 @@
 #!/usr/bin/env bash
 
 COVER_DIR="/tmp/previews"
-metadata="$(mpc current -f "%file%~%artist%~%title%~%album%")•"
-IFS="~" read -d "•" -r filename artist title album <<<"$metadata"
+artist="$(mpc current -f "%artist%")"
+artist="$(mpc current -f "%artist%")"
+title="$(mpc current -f "%title%")"
+album="$(mpc current -f "%album%")"
+filename="$(mpc current -f "%filename%")"
 
 display_notification() {
 	dunstify --replace=697 -t 2500 -i "$1.png" "󰝚 $2" "󰠃 $3\n󰀥 $4"
 }
 update_album_cover() {
-	if [ ! -e "$1.png" ] && [ -e "$1-raw.png" ]; then
+	if [ -e "$1-raw.png" ]; then
 		magick "$1-raw.png"  -thumbnail 80x80 "$1.png"
-	elif [ ! -e "$1.png" ]; then
-		ffmpeg -y -i "$HOME/Music/$filename" -an -vf scale=80:80 "$1.png" >/dev/null 2>&1
+	else
+		ffmpeg -y -i "$HOME/Music/$(mpc current -f %file%)" -an -vf scale=80:80 "$1.png" >/dev/null 2>&1
 	fi
 }
 

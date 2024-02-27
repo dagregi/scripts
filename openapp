@@ -4,10 +4,10 @@ case "$1" in
 --gimp) gimp ;;
 --browser) $BROWSER ;;
 --terminal) $TERMINAL ;;
+--floatterm) $TERMINAL -c CustomFloat -n CustomFloat ;;
 --htop) $TERMINAL -e htop ;;
 --editor) $TERMINAL -e nvim ;;
 --filemanager) $TERMINAL -e lf ;;
---visualizer) $TERMINAL -c CustomFloat -n CustomFloat -e cava ;;
 --music) $TERMINAL -c Ncmpcpp -n Ncmpcpp -e ncmpcpp ;;
 --runner) rofi-runner ;;
 --launcher) rofi-launcher ;;

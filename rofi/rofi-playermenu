@@ -65,7 +65,7 @@ update_options() {
 main() {
 	check_status
 	update_options
-	update_cover "$COVER_PATH/$album-raw"
+	update_cover "$COVER_PATH/$album"
 	state=$(
 		echo -e "$prev_opt\n$toggle_opt\n$next_opt\n$stop_opt\n$repeat_opt\n$shuffle_opt" |
 			rofi -dmenu \
