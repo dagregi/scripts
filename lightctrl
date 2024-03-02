@@ -8,8 +8,8 @@ adjust_brightness() {
 }
 
 case "$1" in
-"up") adjust_brightness "+10%" ;;
-"down") adjust_brightness "10%-" ;;
+"up") adjust_brightness "+5%" ;;
+"down") adjust_brightness "5%-" ;;
 *) echo "Woah! relax mate, this is how you use it:
 
 \033[1;37mUsage: \033[0mlightctrl [COMMAND]

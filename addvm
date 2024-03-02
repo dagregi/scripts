@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+read -rep $'Name?\n> ' name
+iso=$(find ~/projects/virts/iso -type f -exec basename {} \; | sort | fzf --prompt="Choose an ISO: ")
+read -rep $'Type of OS?\n> ' os
+read -rep $'Storage (GiB)\n> ' disk
+read -rep $'Memory (MiB)\n> ' memory
+read -rep $'CPUs\n> ' cpu
+read -rep $'Bios or UEFI?\n> ' boot
+
+read -r -p "Press Enter to continue" </dev/tty
+
+virt-install \
+	--name="$name" \
+	--vcpus="$cpu" \
+	--memory="$memory" \
+	--cdrom="$HOME/projects/virts/iso/$iso" \
+	--disk "$HOME/projects/virts/imgs/$name.img",size="$disk",format=qcow2 \
+	--os-variant="$os" \
+	--boot "$boot" &
