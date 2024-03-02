@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+virsh destroy "$1"
+virsh undefine --domain "$1" --wipe-storage --remove-all-storage --nvram

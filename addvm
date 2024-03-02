@@ -2,7 +2,7 @@
 
 read -rep $'Name?\n> ' name
 iso=$(find ~/projects/virts/iso -type f -exec basename {} \; | sort | fzf --prompt="Choose an ISO: ")
-read -rep $'Type of OS?\n> ' os
+os=$(virt-install --osinfo list | fzf --prompt="OS variant: ")
 read -rep $'Storage (GiB)\n> ' disk
 read -rep $'Memory (MiB)\n> ' memory
 read -rep $'CPUs\n> ' cpu
@@ -15,6 +15,6 @@ virt-install \
 	--vcpus="$cpu" \
 	--memory="$memory" \
 	--cdrom="$HOME/projects/virts/iso/$iso" \
-	--disk "$HOME/projects/virts/imgs/$name.img",size="$disk",format=qcow2 \
+	--disk "$HOME/projects/virts/imgs/$name-$(date +%s).img",size="$disk",format=qcow2 \
 	--os-variant="$os" \
 	--boot "$boot" &
