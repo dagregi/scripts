@@ -1,15 +1,20 @@
 #!/usr/bin/env sh
 
-adjust_brightness() {
-	operation="$1"
-	brightnessctl set "$operation"
-	brightness=$(brightnessctl info | awk '/Current/ {print $4}' | tr -d \(\))
-	dunstify --replace=698 -i brightnesssettings -t 1800 "Brightness: $brightness"
+VALUE=3
+TIME=200000
+
+inc_brightness() {
+	brillo -q -u $TIME -A $VALUE
+	notify-send --replace-id=698 -i brightnesssettings -t 1800 "Brightness: $(brillo)%"
+}
+dec_brightness() {
+	brillo -q -u $TIME -U $VALUE
+	notify-send --replace-id=698 -i brightnesssettings -t 1800 "Brightness: $(brillo)%"
 }
 
 case "$1" in
-"up") adjust_brightness "+5%" ;;
-"down") adjust_brightness "5%-" ;;
+"up") inc_brightness ;;
+"down") dec_brightness ;;
 *) echo "Woah! relax mate, this is how you use it:
 
 \033[1;37mUsage: \033[0mlightctrl [COMMAND]
@@ -18,3 +23,5 @@ case "$1" in
   up                 increase the brightness by 10
   down               decrease the brightness by 10" ;;
 esac
+
+brillo -O
