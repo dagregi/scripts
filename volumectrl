@@ -1,14 +1,13 @@
 #!/usr/bin/env sh
 
 time_out=1800
-device=$(pactl list sinks | awk '/Name/ {print $2}')
 
 get_volume() {
-	pactl get-sink-volume "$device" | awk '{print $5}'
+	amixer -c 0 get Speaker | awk '/Left:/ {print $5}'
 }
 
 show_notification() {
-	volume=$(get_volume | tr -d "%")
+	volume=$(get_volume | tr -d "\n\[\]%")
 	if [ "$volume" -gt 75 ]; then
 		icon="audio-volume-high"
 	elif [ "$volume" -gt 35 ]; then
@@ -21,24 +20,24 @@ show_notification() {
 
 adjust_volume() {
 	operation="$1"
-	is_muted=$(pactl get-sink-mute "$device" | awk '{print $2}')
-	if [ "$is_muted" = "yes" ]; then
-		pactl set-sink-mute "$device" false
+	is_muted=$(amixer -c 0 get Speaker | awk '/Left:/ {print $7}' | tr -d "\n\[\]")
+	if [ "$is_muted" = "off" ]; then
+		amixer -c 0 set Speaker unmute
 	fi
-	pactl set-sink-volume "$device" "$operation"
+	amixer -c 0 set Speaker "$operation"
 	show_notification
 }
 
 case "$1" in
-"up") adjust_volume "+5%" ;;
-"down") adjust_volume "-5%" ;;
+"up") adjust_volume "5+" ;;
+"down") adjust_volume "5-" ;;
 "toggle")
-	is_muted=$(pactl get-sink-mute "$device" | awk '{print $2}')
-	if [ "$is_muted" = "yes" ]; then
-		pactl set-sink-mute "$device" false
+	is_muted=$(amixer -c 0 get Speaker | awk '/Left:/ {print $7}' | tr -d "\n\[\]")
+	if [ "$is_muted" = "off" ]; then
+		amixer -c 0 set Speaker unmute
 		show_notification
 	else
-		pactl set-sink-mute "$device" true
+		amixer -c 0 set Speaker mute
 		dunstify --replace=698 -i audio-volume-muted -t $time_out "Muted"
 	fi
 	;;
