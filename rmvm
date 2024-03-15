@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
 
-virsh destroy "$1"
-virsh undefine --domain "$1" --wipe-storage --remove-all-storage --nvram
+selected=$(virsh list --all --name | fzf)
+[ -z "$selected" ] && exit 1
+
+read -r -p "Press Enter to continue" </dev/tty
+
+virsh destroy "$selected"
+virsh undefine --domain "$selected" --wipe-storage --remove-all-storage --nvram
