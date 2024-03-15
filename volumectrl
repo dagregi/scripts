@@ -3,7 +3,7 @@
 time_out=1800
 
 get_volume() {
-	amixer -c 0 get Speaker | awk '/Left:/ {print $5}'
+	amixer -c 0 get Master | awk '/Mono/ {print $4}'
 }
 
 show_notification() {
@@ -20,24 +20,24 @@ show_notification() {
 
 adjust_volume() {
 	operation="$1"
-	is_muted=$(amixer -c 0 get Speaker | awk '/Left:/ {print $7}' | tr -d "\n\[\]")
+	is_muted=$(amixer -c 0 get Master | awk '/Mono/ {print $6}' | tr -d "\n\[\]")
 	if [ "$is_muted" = "off" ]; then
-		amixer -c 0 set Speaker unmute
+		amixer -c 0 set Master unmute
 	fi
-	amixer -c 0 set Speaker "$operation"
+	amixer -c 0 set Master "$operation"
 	show_notification
 }
 
 case "$1" in
-"up") adjust_volume "5+" ;;
-"down") adjust_volume "5-" ;;
+"up") adjust_volume "5%+" ;;
+"down") adjust_volume "5%-" ;;
 "toggle")
-	is_muted=$(amixer -c 0 get Speaker | awk '/Left:/ {print $7}' | tr -d "\n\[\]")
+	is_muted=$(amixer -c 0 get Master | awk '/Mono/ {print $6}' | tr -d "\n\[\]")
 	if [ "$is_muted" = "off" ]; then
-		amixer -c 0 set Speaker unmute
+		amixer -c 0 set Master unmute
 		show_notification
 	else
-		amixer -c 0 set Speaker mute
+		amixer -c 0 set Master mute
 		dunstify --replace=698 -i audio-volume-muted -t $time_out "Muted"
 	fi
 	;;
