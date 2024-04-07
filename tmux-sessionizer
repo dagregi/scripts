@@ -3,7 +3,7 @@
 folders="$HOME/projects
 $HOME/projects/freelance
 $HOME/projects/rust
-$HOME/projects/ocaml
+$HOME/projects/web
 $HOME/projects/go"
 
 [[ $# -eq 1 ]] && selected=$1 || selected=$(fd . $folders -td --exact-depth=1 | sort | uniq | fzf)

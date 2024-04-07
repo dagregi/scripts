@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 bmdirs="$XDG_DATA_HOME/bm-dirs"
-shortcut=$(eval "echo \"$(cat "$bmdirs")\"" | rofi -dmenu -kb-custom-1 "Alt+o" -kb-custom-2 "Alt+t" -kb-custom-3 "Alt+e" -theme $XDG_CONFIG_HOME/rofi/themes/bookmarks.rasi)
+shortcut=$(eval "echo \"$(cat "$bmdirs")\"" | rofi -dmenu -kb-custom-1 "Alt+h" -kb-custom-2 "Alt+t" -kb-custom-3 "Alt+n" -theme $XDG_CONFIG_HOME/rofi/themes/bookmarks.rasi)
 
 TEMP="$?"
 if [ $TEMP -eq 10 ]; then
