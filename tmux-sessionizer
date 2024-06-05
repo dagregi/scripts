@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 
-folders="$HOME/projects
-$HOME/projects/freelance
-$HOME/projects/rust
-$HOME/projects/web
-$HOME/projects/go"
+folders="$(eval "echo \"$(cat "$BM_PROJECT")\"")"
 
 [[ $# -eq 1 ]] && selected=$1 || selected=$(fd . $folders -td --exact-depth=1 | sort | uniq | fzf)
 [[ -z $selected ]] && exit 0
