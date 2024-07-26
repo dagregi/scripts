@@ -18,7 +18,7 @@ while true; do
     status=$(cat $battery/status)
 
     # If battery full and not already warned about that
-    if [ "$last" != "FULL" ] && [ "$status" = "Full" ]; then
+    if [ "$last" != "FULL" ] && [ "$capacity" = "89" ]; then
       notify-send -r 619 -i battery-full "Battery full. Remove the adapter!"
       last="FULL"
     fi
