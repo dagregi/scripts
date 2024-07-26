@@ -15,7 +15,7 @@ show_notification() {
 	else
 		icon="audio-volume-low"
 	fi
-	dunstify --replace=698 -i "$icon" -t $time_out "Vol: $volume%"
+	notify-send --replace-id=698 -i "$icon" -t $time_out "Vol: $volume%"
 }
 
 adjust_volume() {
@@ -38,7 +38,7 @@ case "$1" in
 		show_notification
 	else
 		amixer -c 0 set Master mute
-		dunstify --replace=698 -i audio-volume-muted -t $time_out "Muted"
+		notify-send --replace-id=698 -i audio-volume-muted -t $time_out "Muted"
 	fi
 	;;
 *) echo "Woah! relax mate, this is how you use it:

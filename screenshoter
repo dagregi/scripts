@@ -5,9 +5,9 @@ filename="$dir/screenshot-$(date +%Y%m%d-%I%M%S).png"
 
 show_notification() {
 	if [ -e "$filename" ]; then
-		dunstify -i "$filename" "Screenshot" "Saved screenshot "
+		notify-send -i "$filename" "Screenshot" "Saved screenshot "
 	else
-		dunstify -i action-unavailable "Screenshot" "Cancelled screenshot"
+		notify-send -i action-unavailable "Screenshot" "Cancelled screenshot"
 	fi
 }
 
@@ -20,7 +20,7 @@ take_screenshot() {
 countdown() {
 	local tm="${1:-5}"
 	for sec in $(seq $tm -1 1); do
-		dunstify -t 900 --replace=699 -i timer-symbolic "Taking shot in : $sec"
+		notify-send -t 900 --replace-id=699 -i timer-symbolic "Taking shot in : $sec"
 		sleep 1
 	done
 }

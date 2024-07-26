@@ -26,18 +26,18 @@ update_cover() {
 }
 
 toggle_play_pause() {
-	[ -n "$status" ] && mpc -q toggle && dunstify --replace=696 -t $time_out "$(mpc status | awk '/\[/ { print $1 }' | tr -d '\[\]' | sed 's/p/P/')" || exit 0
+	[ -n "$status" ] && mpc -q toggle && notify-send --replace-id=696 -t $time_out "$(mpc status | awk '/\[/ { print $1 }' | tr -d '\[\]' | sed 's/p/P/')" || exit 0
 }
 stop_playback() {
 	mpc -q stop
-	dunstify --replace=696 -i media-playback-stop -t $time_out "Playback stopped"
+	notify-send --replace-id=696 -i media-playback-stop -t $time_out "Playback stopped"
 }
 
 toggle_shuffle() {
-	[ -n "$status" ] && mpc -q random && dunstify --replace=696 -i media-playlist-shuffle -t $time_out "Random: $(mpc status | awk '/random/ { print $5 }')" || exit 0
+	[ -n "$status" ] && mpc -q random && notify-send --replace-id=696 -i media-playlist-shuffle -t $time_out "Random: $(mpc status | awk '/random/ { print $5 }')" || exit 0
 }
 toggle_repeat() {
-	[ -n "$status" ] && mpc -q repeat && dunstify --replace=696 -i media-playlist-repeat -t $time_out "Repeat: $(mpc status | awk '/repeat/ { print $3 }')" || exit 0
+	[ -n "$status" ] && mpc -q repeat && notify-send --replace-id=696 -i media-playlist-repeat -t $time_out "Repeat: $(mpc status | awk '/repeat/ { print $3 }')" || exit 0
 }
 
 next_track() {

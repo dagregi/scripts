@@ -8,7 +8,7 @@ album="$(mpc current -f "%album%")"
 filename="$(mpc current -f "%filename%")"
 
 display_notification() {
-	dunstify --replace=697 -t 2500 -i "$1.png" "󰝚 $2" "󰠃 $3\n󰀥 $4"
+	notify-send --replace-id=697 -t 2500 -i "$1.png" "󰝚 $2" "󰠃 $3\n󰀥 $4"
 }
 update_album_cover() {
 	if [ -e "$1-raw.png" ]; then
