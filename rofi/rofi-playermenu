@@ -12,10 +12,10 @@ is_shuffle=$(awk '/random/ { print $5 }' <<<"$status")
 is_playing=$(awk '/\[/ { print $1 }' <<<"$status" | tr -d '\[\]')
 
 check_status() {
-	[ -z "$status" ] && prompt="Offline" && message="MPD is Offline"
-	[ "$is_stopped" = "n/a" ] && prompt="Stopped" && message="Playback stopped"
-	[ -n "$status" ] && [ "$is_stopped" != "n/a" ] && prompt="$artist" && message="󰝚  $title
+	[ -n "$status" ] && prompt="$artist" && message="󰝚  $title
 󰀥  $album"
+	[ -z "$is_playing" ] && prompt="Stopped" && message="Playback stopped"
+	[ -z "$status" ] && prompt="Offline" && message="MPD is Offline"
 }
 
 update_cover() {
