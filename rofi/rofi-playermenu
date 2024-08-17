@@ -6,7 +6,6 @@ status=$(mpc status)
 artist=$(mpc current -f %artist%)
 title=$(mpc current -f %title%)
 album=$(mpc current -f %album%)
-is_stopped=$(awk '{ print $2 }' <<<"$status")
 is_repeat=$(awk '/repeat/ { print $3 }' <<<"$status")
 is_shuffle=$(awk '/random/ { print $5 }' <<<"$status")
 is_playing=$(awk '/\[/ { print $1 }' <<<"$status" | tr -d '\[\]')
@@ -41,10 +40,10 @@ toggle_repeat() {
 }
 
 next_track() {
-	[ "$is_stopped" != "n/a" ] && [ -n "$status" ] && mpc -q next && songchanged || exit 0
+	[ -n "$status" ] && mpc -q next && songchanged || exit 0
 }
 prev_track() {
-	[ "$is_stopped" != "n/a" ] && [ -n "$status" ] && mpc -q prev && songchanged || exit 0
+	[ -n "$status" ] && mpc -q prev && songchanged || exit 0
 }
 
 update_options() {
@@ -54,12 +53,11 @@ update_options() {
 	stop_opt="󰓛"
 	shuffle_opt="󰒝"
 	repeat_opt="󰑖"
-	urgent=""
 	[ "$is_repeat" = "off" ] && [ "$is_shuffle" = "off" ] && active=""
 	[ "$is_repeat" = "on" ] && [ "$is_shuffle" = "off" ] && active="4"
 	[ "$is_repeat" = "off" ] && [ "$is_shuffle" = "on" ] && active="5"
 	[ "$is_repeat" = "on" ] && [ "$is_shuffle" = "on" ] && active="4,5"
-	[ "$is_stopped" = "n/a" ] && urgent="3"
+	[ -z "$is_playing" ] && urgent="3"
 }
 
 main() {
