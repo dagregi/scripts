@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 COVER_PATH="/tmp/previews"
+previewname="$COVER_PATH/$(mpc --format %album% current | base64)-rofi.png"
 time_out=1800
 status=$(mpc status)
 artist=$(mpc current -f %artist%)
@@ -15,13 +16,6 @@ check_status() {
 󰀥  $album"
 	[ -z "$is_playing" ] && prompt="Stopped" && message="Playback stopped"
 	[ -z "$status" ] && prompt="Offline" && message="MPD is Offline"
-}
-
-update_cover() {
-	if [ ! -e "$1-raw.png" ]; then
-		ffmpeg -y -i "$HOME/Music/$(mpc current -f %file%)" -an -vf scale=360:360 "$1-raw.png" >/dev/null 2>&1
-	fi
-	cover="$1-raw.png"
 }
 
 toggle_play_pause() {
@@ -63,12 +57,12 @@ update_options() {
 main() {
 	check_status
 	update_options
-	update_cover "$COVER_PATH/$album"
+	[ -e "$previewname" ] || ffmpeg -y -i "$HOME/Music/$(mpc current -f %file%)" -an -vf scale=360:360 "$previewname" >/dev/null 2>&1
 	state=$(
 		echo -e "$prev_opt\n$toggle_opt\n$next_opt\n$stop_opt\n$repeat_opt\n$shuffle_opt" |
 			rofi -dmenu \
 				-selected-row 1 \
-				-theme-str "inputbar {background-image: url(\"$cover\", width);}" \
+				-theme-str "inputbar {background-image: url(\"$previewname\", width);}" \
 				-p "$prompt" \
 				-mesg "$message" \
 				-a "${active}" -u "$urgent" \
