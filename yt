@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+
+[ -z "$1" ] && echo "Query needed!" && exit 1
+pages="$2"
+[ -z "$pages" ] && pages=1
+
+ytfzf -lft \
+	--notify-playing \
+	-T chafa \
+	--async-thumbnails \
+	--pages=$pages \
+	--multi-search \
+	--ytdl-opts='--embed-metadata -ic' \
+	"$1"
