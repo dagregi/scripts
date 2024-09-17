@@ -2,7 +2,7 @@
 
 folders="$(eval "echo \"$(cat "$BM_PROJECT")\"")"
 
-[[ $# -eq 1 ]] && selected=$1 || selected=$(find $folders -mindepth 1 -maxdepth 1 -type d  | sort -u | fzf)
+[[ $# -eq 1 ]] && selected=$1 || selected=$(find $folders -mindepth 1 -maxdepth 1 -type d | sort -u | fzf)
 [[ -z $selected ]] && exit 0
 selected_name=$(basename "$selected" | tr . _)
 tmux_running=$(pgrep tmux)

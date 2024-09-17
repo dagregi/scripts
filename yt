@@ -3,8 +3,9 @@
 [ -z "$1" ] && echo "Query needed!" && exit 1
 pages="$2"
 [ -z "$pages" ] && pages=1
+[ -z "$3" ] && f="f" || f=""
 
-ytfzf -lft \
+ytfzf -lt$f \
 	--notify-playing \
 	-T chafa \
 	--async-thumbnails \
