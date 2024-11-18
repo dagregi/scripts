@@ -8,4 +8,4 @@ previewname="$previewdir/$(mpc --format %album% current | base64).png"
 [ ! -d "$COVER_DIR" ] && mkdir -p $previewdir
 [ -e "$previewname" ] || ffmpeg -y -i "$filename" -an -vf scale=80:80 "$previewname" >/dev/null 2>&1
 
-notify-send -r 27072 "󰝚 $(mpc --format '%artist%' current)" "$(mpc --format '󰠃 %title%\n󰀥 %album%' current)" -i "$previewname"
+notify-send -r 27072 "󰝚 $(mpc --format '%title%' current)" "$(mpc --format '󰠃 %artist%\n󰀥 %album%' current)" -i "$previewname"

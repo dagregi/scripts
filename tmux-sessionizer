@@ -6,6 +6,15 @@ folders="$(eval "echo \"$(cat "$BM_PROJECT")\"")"
 [[ -z $selected ]] && exit 0
 selected_name=$(basename "$selected" | tr . _)
 tmux_running=$(pgrep tmux)
-[[ -z $TMUX ]] && [[ -z $tmux_running ]] && tmux new-session -s $selected_name -c $selected && exit 0
-! tmux has-session -t=$selected_name 2>/dev/null && tmux new-session -ds $selected_name -c $selected
-tmux switch-client -t $selected_name
+
+if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
+	tmux new-session -ds $selected_name -c $selected
+else
+	! tmux has-session -t=$selected_name 2>/dev/null && tmux new-session -ds $selected_name -c $selected
+	tmux switch-client -t $selected_name
+fi
+
+tmux send-keys -t $selected_name:1 'nvim' C-m
+tmux new-window -t $selected_name:2
+tmux select-window -t $selected_name:1
+tmux attach
