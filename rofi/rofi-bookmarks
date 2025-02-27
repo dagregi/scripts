@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 bookmarks=$(cat "$XDG_DATA_HOME/bm-urls")
-selected=$(echo "$bookmarks" | rofi -dmenu -kb-custom-1 "Alt+t" -kb-custom-2 "Alt+w" -theme $XDG_CONFIG_HOME/rofi/themes/bookmarks.rasi)
+selected=$(echo "$bookmarks" | rofi -dmenu -kb-custom-1 "Ctrl+t" -kb-custom-2 "Alt+w" -theme $XDG_CONFIG_HOME/rofi/themes/bookmarks.rasi)
 
 TEMP="$?"
 if [ $TEMP -eq 10 ]; then
