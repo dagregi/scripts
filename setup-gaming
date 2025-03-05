@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+sudo xbps-install -Suy vulkan-loader-32bit gnutls-32bit libglvnd-32bit MangoHud \
+	wine wine-32bit winetricks gamemode
+
+sudo xbps-install -Suy lutris
+
+echo "[+] Setup complete."

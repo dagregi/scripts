@@ -7,16 +7,12 @@ if [ $supports -eq 0 ]; then
 	exit
 fi
 
-sudo xbps-install -Su libvirt virt-manager qemu polkit
-sudo usermod -a -G libvirt,kvm dagregi $USER
+sudo xbps-install -Suy libvirt virt-manager qemu polkit
+sudo usermod -aG libvirt,kvm dagregi $USER
 
 cp -rv /etc/libvirt/libvirt.conf ~/.config/libvirt/
 echo "uri_default = \"qemu:///system\"" >>~/.config/libvirt/libvirt.conf
 
-sudo ln -s /etc/sv/dbus /var/service/
-sudo ln -s /etc/sv/polkitd /var/service
-sudo ln -s /etc/sv/libvirtd /var/service/
-sudo ln -s /etc/sv/virtlockd /var/service/
-sudo ln -s /etc/sv/virtlogd /var/service/
+sudo ln -s /etc/sv/{dbus,virtlogd,virtlockd,libvirtd,polkitd} /var/service/
 
 echo "[+] Setup complete."
