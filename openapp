@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 case "$1" in
---browser) $BROWSER ;;
+--browser) apulse $BROWSER ;;
 --terminal) $TERMINAL ;;
 --floatterm) $TERMINAL -c CustomFloat -n CustomFloat ;;
 --editor) $TERMINAL -e nvim ;;
