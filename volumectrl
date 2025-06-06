@@ -51,4 +51,4 @@ case "$1" in
   toggle             toggle mute state" ;;
 esac
 
-polybar-msg action "#audio.hook.0"
+# polybar-msg action "#audio.hook.0"
