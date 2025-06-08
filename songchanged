@@ -3,9 +3,14 @@
 music_dir="$HOME/Music"
 previewdir="/tmp/previews"
 filename="$(mpc --format "$music_dir"/%file% current)"
+title="$(mpc --format '%title%' current)"
 previewname="$previewdir/$(mpc --format %album% current | base64).png"
 
 [ ! -d "$COVER_DIR" ] && mkdir -p $previewdir
 [ -e "$previewname" ] || ffmpeg -y -i "$filename" -an -vf scale=80:80 "$previewname" >/dev/null 2>&1
 
-notify-send -r 27072 "󰝚 $(mpc --format '%title%' current)" "$(mpc --format '󰠃 %artist%\n󰀥 %album%' current)" -i "$previewname"
+if [[ -n "$title" ]]; then
+	notify-send -r 27072 "󰝚 $title" "$(mpc --format '󰠃 %artist%\n󰀥 %album%' current)" -i "$previewname"
+else
+	notify-send -r 27072 "󰝚 $(basename "$(mpc --format %file% current)" | sed 's/\.mp3//')" -i "$previewname"
+fi
