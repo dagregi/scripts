@@ -1,0 +1,54 @@
+#!/bin/sh
+
+success() { printf "\033[1;32m[+] %s\033[0m\n" "$1"; }
+info() { printf "\033[1;36m[*] %s\033[0m\n" "$1"; }
+
+info "Installing base development packages"
+sudo xbps-install -Suy base-devel rust-sccache mold unzip xz jq
+
+if ! command -v rustup >/dev/null 2>&1; then
+	info "Installing Rust"
+	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+	success "Rust installed successfully"
+else
+	success "Rust already installed, skipping"
+fi
+
+if ! command -v go >/dev/null 2>&1; then
+	info "Installing Go"
+	sudo xbps-install -y go
+	success "Go installed successfully"
+else
+	success "Go already installed, skipping"
+fi
+
+if [ ! -d "$NVM_DIR" ]; then
+	info "Installing Node.js via NVM"
+	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+	export NVM_DIR="$XDG_CONFIG_HOME/nvm"
+	[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+	nvm install node
+	success "Node.js installed successfully"
+else
+	success "NVM already installed, skipping"
+fi
+
+if ! command -v python3 >/dev/null 2>&1; then
+	info "Installing Python 3"
+	sudo xbps-install -y python3 python3-pip python3-virtualenv
+	success "Python installed successfully"
+else
+	success "Python already installed, skipping"
+fi
+
+if ! command -v docker >/dev/null 2>&1; then
+	info "Installing Docker and Docker Compose"
+	sudo xbps-install -y docker docker-compose
+	success "Docker installed successfully"
+	info "Starting docker services"
+	sudo ln -s /etc/sv/{docker,containerd} /var/service/
+else
+	success "Docker already installed, skipping"
+fi
+
+success "Setup Complete."
