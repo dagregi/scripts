@@ -12,5 +12,5 @@ previewname="$previewdir/$(mpc --format %album% current | base64).png"
 if [[ -n "$title" ]]; then
 	notify-send -r 27072 "󰝚 $title" "$(mpc --format '󰠃 %artist%\n󰀥 %album%' current)" -i "$previewname"
 else
-	notify-send -r 27072 "󰝚 $(basename "$(mpc --format %file% current)" | sed 's/\.mp3//')" -i "$previewname"
+	notify-send -r 27072 "󰝚 $(basename "$(mpc --format %file% current)" | sed 's/\.\(mp3\|flac\)//')" -i "$previewname"
 fi
