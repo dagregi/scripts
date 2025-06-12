@@ -17,12 +17,18 @@ current_ssid() {
 }
 
 notify() {
-	notify-send -r 7707 "Wi-Fi" "$1"
+	notify-send -r 7707 -t 800 "Wi-Fi" "$1"
 }
 
 scan_networks() {
 	$CMD scan >/dev/null
-	sleep 1
+	spinner=('⣾' '⣽' '⣻' '⣷' '⡿' '⢿' '⣟' '⣯')
+	for i in {0..20}; do
+		frame=${spinner[i % ${#spinner[@]}]}
+		notify "$frame Scanning networks"
+		sleep 0.1
+	done
+	notify "Scan Complete" && sleep .5
 	$CMD scan_results | awk 'NR>1 {print $5}' | rg -v '^$' | sort -u
 }
 
@@ -33,7 +39,7 @@ connect() {
 	if [[ -n "$net_id" ]]; then
 		$CMD select_network "$net_id"
 		$CMD enable_network "$net_id"
-		sleep 1
+		sleep 2
 	else
 		password=$(rofi-pinentry)
 		if [[ -z "$password" ]]; then
@@ -48,7 +54,7 @@ connect() {
 		$CMD set_network "$net_id" scan_ssid 1
 		$CMD enable_network "$net_id"
 		$CMD save_config >/dev/null
-		sleep 1
+		sleep 2
 	fi
 
 	state=$($CMD status | awk -F= '/wpa_state/ {print $2}')
