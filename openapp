@@ -14,5 +14,7 @@ case "$1" in
 --shortcuts) rofi-shortcuts ;;
 --passwords) rofi-passwords ;;
 --playermenu) rofi-playermenu ;;
+--wifi-toggle) rofi-wifi toggle;;
+--vpn-toggle) $XDG_CONFIG_HOME/polybar/scripts/vpn toggle ;;
 *) echo "Don't know what to do?" ;;
 esac
