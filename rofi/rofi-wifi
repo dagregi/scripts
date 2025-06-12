@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+
+wifi_iface=$(iw dev | awk '$1=="Interface"{print $2; exit}')
+ctrl_iface="/run/wpa_supplicant"
+
+CMD="wpa_cli -i $wifi_iface -p $ctrl_iface"
+
+is_connected() {
+	$CMD status | rg -q "wpa_state=COMPLETED"
+}
+is_disabled() {
+	$CMD status | rg -q "wpa_state=INTERFACE_DISABLED"
+}
+
+current_ssid() {
+	$CMD status | awk -F= '/^ssid/ {print $2}'
+}
+
+notify() {
+	notify-send -r 7707 "Wi-Fi" "$1"
+}
+
+scan_networks() {
+	$CMD scan >/dev/null
+	sleep 1
+	$CMD scan_results | awk 'NR>1 {print $5}' | rg -v '^$' | sort -u
+}
+
+connect() {
+	ssid="$1"
+	net_id=$($CMD list_networks | awk -v s="$ssid" '$2 == s {print $1}')
+
+	if [[ -n "$net_id" ]]; then
+		$CMD select_network "$net_id"
+		$CMD enable_network "$net_id"
+		sleep 1
+	else
+		password=$(rofi-pinentry)
+		if [[ -z "$password" ]]; then
+			notify "Connection to $ssid cancelled (no password entered)"
+			return
+		fi
+
+		$CMD add_network >/dev/null
+		net_id=$($CMD list_networks | tail -n1 | cut -f1)
+		$CMD set_network "$net_id" ssid "\"$ssid\""
+		$CMD set_network "$net_id" psk "\"$password\""
+		$CMD set_network "$net_id" scan_ssid 1
+		$CMD enable_network "$net_id"
+		$CMD save_config >/dev/null
+		sleep 1
+	fi
+
+	state=$($CMD status | awk -F= '/wpa_state/ {print $2}')
+	if [[ "$state" == "COMPLETED" ]]; then
+		notify "Connected to $ssid"
+	else
+		notify "Failed to connect to $ssid — check password"
+		$CMD remove_network "$net_id"
+	fi
+}
+
+disconnect() {
+	$CMD disconnect
+	notify "Wi-Fi disconnected"
+}
+
+toggle() {
+	if is_connected; then
+		disconnect
+	else
+		menu
+	fi
+}
+
+menu() {
+	if is_disabled; then
+		notify "Interface disabled"
+		return
+	fi
+
+	ssids=$(scan_networks)
+	[[ -z "$ssids" ]] && notify "No Wi-Fi networks found" && return
+
+	selected=$(printf "%s\n(manually enter network)" "$ssids" |
+		rofi -dmenu \
+			-theme-str 'entry { placeholder: "Networks..."; }' \
+			-theme $XDG_CONFIG_HOME/rofi/themes/wifi.rasi)
+	[[ -z "$selected" ]] && notify "No Wi-Fi selected" && return
+
+	if [[ "$selected" == "(manually enter network)" ]]; then
+		manual_ssid=$(rofi -dmenu \
+			-theme-str 'entry { placeholder: "Hidden SSID..."; }' \
+			-theme $XDG_CONFIG_HOME/rofi/themes/wifi.rasi)
+		[[ -n "$manual_ssid" ]] && connect "$manual_ssid"
+	else
+		connect "$selected"
+	fi
+}
+
+case "$1" in
+toggle | --toggle) toggle ;;
+menu | --menu) menu ;;
+*)
+	echo "Usage: $0 [toggle|status|menu]"
+	;;
+esac
