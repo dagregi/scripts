@@ -3,6 +3,7 @@
 case "$1" in
 --browser) apulse $BROWSER ;;
 --terminal) $TERMINAL ;;
+--anyterm) $TERMINAL -c AnyTerm -n AnyTerm ;;
 --floatterm) $TERMINAL -c CustomFloat -n CustomFloat ;;
 --editor) $TERMINAL -e nvim ;;
 --filemanager) $TERMINAL -e lf ;;
