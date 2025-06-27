@@ -7,7 +7,7 @@ pages="$2"
 
 ytfzf -lt$f \
 	--notify-playing \
-	-T chafa \
+	-T chafa-sixel \
 	--async-thumbnails \
 	--pages=$pages \
 	--multi-search \
