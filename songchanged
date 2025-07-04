@@ -4,7 +4,7 @@ music_dir="$HOME/Music"
 previewdir="/tmp/previews"
 filename="$(mpc --format "$music_dir"/%file% current)"
 title="$(mpc --format '%title%' current)"
-previewname="$previewdir/$(mpc --format %album% current | base64).png"
+previewname="$previewdir/$(mpc --format %album%-%artist% current | base64).png"
 
 [ ! -d "$COVER_DIR" ] && mkdir -p $previewdir
 [ -e "$previewname" ] || ffmpeg -y -i "$filename" -an -vf scale=80:80 "$previewname" >/dev/null 2>&1
